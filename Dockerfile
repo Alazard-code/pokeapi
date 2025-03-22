@@ -18,6 +18,9 @@ FROM python:3.12.8-alpine3.21
 
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE='config.docker-compose'
+ENV WEB_CONCURRENCY=2
+ENV PYTHONHASHSEED=random
+ENV GUNICORN_CMD_ARGS="--workers=2 --threads=2 --worker-class=gthread --max-requests=1000"
 
 RUN mkdir /code
 WORKDIR /code
@@ -27,11 +30,16 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 ADD . /code/
 
+
+
+
+
 RUN addgroup -g 1000 -S pokeapi && \
     adduser -u 1000 -S pokeapi -G pokeapi
 USER pokeapi
-CMD ["sh", "-c", "gunicorn config.wsgi:application --bind 0.0.0.0:${PORT}"]
-# CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:$PORT"]
+
+CMD ["sh", "-c", "gunicorn config.wsgi:application --bind 0.0.0.0:${PORT} --workers=2 --threads=2 --worker-class=gthread --max-requests=1000"]
+# CMD ["sh", "-c", "gunicorn config.wsgi:application --bind 0.0.0.0:${PORT}"]
 
 # CMD ["gunicorn", "config.wsgi:application", "-c", "gunicorn.conf.py"]
 
