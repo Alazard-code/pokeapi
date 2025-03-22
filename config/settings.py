@@ -61,19 +61,20 @@ MIDDLEWARE = [
 ROOT_URLCONF = "config.urls"
 
 WSGI_APPLICATION = "config.wsgi.application"
-
+# Update database configuration
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "pokeapi_co_db",
-        "USER": "root",
-        "PASSWORD": "pokeapi",
-        "HOST": "localhost",
-        "PORT": "",
+        "NAME": os.environ.get("DATABASE_NAME", "pokeapi_co_db"),
+        "USER": os.environ.get("DATABASE_USER", "root"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "pokeapi"),
+        "HOST": os.environ.get("DATABASE_HOST", "localhost"),
+        "PORT": os.environ.get("DATABASE_PORT", "5432"),
         "CONN_MAX_AGE": 30,
     }
 }
 
+# Update Redis cache configuration
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -85,11 +86,41 @@ CACHES = {
             "RETRY_ON_TIMEOUT": True,
             "CONNECTION_POOL_KWARGS": {
                 "max_connections": 50,
-                "retry_on_timeout": True
+                "retry_on_timeout": True,
+                "ssl_cert_reqs": None  # Important for Heroku Redis TLS connection
             }
         }
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": "pokeapi_co_db",
+#         "USER": "root",
+#         "PASSWORD": "pokeapi",
+#         "HOST": "localhost",
+#         "PORT": "",
+#         "CONN_MAX_AGE": 30,
+#     }
+# }
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "SOCKET_CONNECT_TIMEOUT": 5,
+#             "SOCKET_TIMEOUT": 5,
+#             "RETRY_ON_TIMEOUT": True,
+#             "CONNECTION_POOL_KWARGS": {
+#                 "max_connections": 50,
+#                 "retry_on_timeout": True
+#             }
+#         }
+#     }
+# }
 
 # Cache time to live is 15 minutes (optional)
 CACHE_TTL = 60 * 15

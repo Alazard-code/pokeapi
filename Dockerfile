@@ -30,6 +30,12 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 ADD . /code/
 
+RUN apk add --no-cache postgresql-libs libstdc++
+RUN apk add --no-cache --virtual .build-deps gcc g++ musl-dev \
+    postgresql-dev binutils rust cargo && \
+    python3 -m pip install -r requirements.txt --no-cache-dir && \
+    apk --purge del .build-deps
+
 
 
 
