@@ -2,7 +2,7 @@ FROM python:3.12.8-alpine3.21 AS builder
 
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8000
-EXPOSE $PORT
+EXPOSE ${PORT}
 
 
 RUN mkdir /code
@@ -30,7 +30,8 @@ ADD . /code/
 RUN addgroup -g 1000 -S pokeapi && \
     adduser -u 1000 -S pokeapi -G pokeapi
 USER pokeapi
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:$PORT"]
+CMD ["sh", "-c", "gunicorn config.wsgi:application --bind 0.0.0.0:${PORT}"]
+# CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:$PORT"]
 
 # CMD ["gunicorn", "config.wsgi:application", "-c", "gunicorn.conf.py"]
 
