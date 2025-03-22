@@ -109,6 +109,22 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_METHODS = "GET"
 
+CORS_ALLOW_HEADERS = [
+    'cache-control',    # Allows client to cache responses
+    'pragma',           # Allows client to cache responses
+    'content-type',     # Allows client to send JSON content
+    'accept',
+    'origin',
+    'expires',
+    'authorization',
+    'dnt'
+]
+
+CORS_EXPOSE_HEADERS = [
+    'content-type',     # Allows client to read response content type
+    'x-total-count'     # Allows client to read pagination info
+]
+
 CORS_URLS_REGEX = r"^/api/.*$"
 
 REST_FRAMEWORK = {
